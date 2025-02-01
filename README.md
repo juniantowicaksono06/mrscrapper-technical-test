@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Technical Test MrScraper - Junianto Ichwan Dwi Wicaksono
 
-## Getting Started
+### Project Requirements
 
-First, run the development server:
+1. To run this app make sure you have node version 20, mongodb, git installed on your computer.
+
+2. Make sure you have already registered an account on Groq. If not, please register at https://console.groq.com first.
+
+3. Open your terminal and clone this repo using the following command:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/juniantowicaksono06/mrscrapper-technical-test
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. After you clone the repo you can install the required package for the project using
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install # If you use npm
+yarn install # If you use yarn
+bun install # If you use bun
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5. Rename or copy the .env.example to .env and make sure to configure it correctly
+```bash
+EBAY_BASE_URL=https://www.ebay.com/
+GROQ_API_KEY="<YOUR_GROQ_API_KEY>" # REGISTER YOUR GROQ API KEY IN https://console.groq.com/login
 
-## Learn More
+MONGODB_URI="<MONGODB_URI>"
 
-To learn more about Next.js, take a look at the following resources:
+PUPPETEER_HEADLESS=false # Change to true to run in headless mode
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+EBAY_MAX_PAGINATION=2 # MAXIMUM PAGINATION
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+6. You can run the project using the command
+```bash
+npm run dev # If you use npm
+yarn dev # if you use yarn
+bun run dev # if you use bun
+```
 
-## Deploy on Vercel
+## API Docs
+- [Base Url](#baseurl)
+- [Endpoints](#endpoints)
+    - [POST /api/scraping/ebay?search=search-product](#perform-scrapping)
+    - [GET /api/retrieve/:transaction_id](#get-products-by-transaction-id)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Base Url
+- **Base Url:** http://localhost:3000
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Endpoints
+### **POST /api/scraping/ebay**
+- **Description:** Perform scrapping
+- **URL:** `/api/scraping/ebay`
+- **Headers:**
+    - `Content-Type: application/json`
+- **Method:** `POST`
+- **Body:**
+```json
+{
+    "search": "PS5"
+}
+```
+- **Response Success:**
+```json
+{
+    "code": 200,
+    "message": "OK",
+    "data": {
+        "transaction_id": "8eab3da7-8361-4ad4-b295-6f2be9a679a1"
+    }
+}
+```
+- **HTTP Response Success:** `200`
+
+- **Response Error:**
+```json
+{
+    "code": 500,
+    "message": "Internal server error!"
+}
+```
+- **HTTP Response Error:** `500`
+
+### **GET /api/retrieve/:transaction_id**
+
+- **Description:** Retrieve the products after scraping is finished
+- **URL:** `/api/retrieve/:transaction_id`
+- **Method:** `GET`
+- **Response Success:**
+```json
+{
+    "code": 200,
+    "message": "Ok",
+    "data": [
+        // List of products
+    ]
+}
+```
+- **HTTP Response Success:** `200`
+- **Response Still Processing:**
+```json
+{
+    "code": 202,
+    "message": "Still processing. Please wait!"
+}
+```
+- **HTTP Response Still Processing:** `202`
+
+
+- **Response Error:**
+```json
+{
+    "code": 500,
+    "message": "Internal server error!"
+}
+```
+- **HTTP Response Error:** `500`
