@@ -93,7 +93,18 @@ bun run dev # if you use bun
     "code": 200,
     "message": "Ok",
     "data": [
-        // List of products
+        {
+            "product_name": "Xbox One Console + Genuine Controller + Kinect Compatible + Cables",
+            "product_price": "IDR1,814,782.37",
+            "product_description": "This Xbox One Console Bundle is in great condition, sold as pictured, with every single button tested and working perfectly. It includes the Xbox One 500gb Console, Xbox One Controller, Power Supply, Power Cable, and HDMI Cable. All orders are packed and shipped within the same business day. Postage cost details are available in the Postage tab. The item is available for pick-up. Handling time is the same business day. Combine postage is available upon request. Payment methods include PayPal, Google Pay, Visa/Mastercard/American Express, Afterpay, and Bank Deposit. Refund policy requires items to be returned within 30 days in original packaging and condition, with the buyer responsible for return postage costs.",
+            "_id": "679e6d9570f3f7e99194ceac"
+        },
+        {
+            "product_name": "Xbox One Gold Excellent Condition",
+            "product_price": "IDR1,182,666.87",
+            "product_description": "Console recently refurbished with internal cleaning and thermal paste replaced. Selling only the console. Shipping possible at buyer's expense with insurance covering the full amount.",
+            "_id": "679e6d9970f3f7e99194ceae"
+        }
     ]
 }
 ```
