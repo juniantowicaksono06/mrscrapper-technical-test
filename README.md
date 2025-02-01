@@ -42,7 +42,7 @@ bun run dev # if you use bun
 ## API Docs
 - [Base Url](#url)
 - [Endpoints](#endpoints)
-    - [POST /api/scraping/ebay?search=search-product](#post-scraping-ebay)
+    - [POST /api/scraping/ebay](#post-scraping-ebay)
     - [GET /api/retrieve/:transaction_id](#get-retrieve-products)
 
 ## URL
