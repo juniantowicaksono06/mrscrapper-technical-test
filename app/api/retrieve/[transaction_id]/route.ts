@@ -1,16 +1,12 @@
-import { Request, type Item } from '@/app/models/request';
+import { Request } from '@/app/models/request';
 import connectToDb from "@/app/lib/mongoose";
 
 export async function GET(req: Request, { params }: {params: Promise<{transaction_id: string}>}) {
     await connectToDb();
     try {
         const {transaction_id} = await params;
-        const request = await Request.findOne({ transactionId: transaction_id }).select('items -_id status');
-        if (request && request.items) {
-            request.items.forEach((item: Item) => {
-                delete item._id; // Remove _id from each item
-            });
-        }
+        const request = await Request.findOne({ transactionId: transaction_id }) // Get data based on transaction id
+        .select('status items.product_name items.product_price items.product_description -_id');
         if(request.status === 'processing') {
             return Response.json({
                 code: 202,

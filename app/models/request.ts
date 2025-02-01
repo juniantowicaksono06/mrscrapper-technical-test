@@ -1,11 +1,6 @@
-import { Schema, model, models } from "mongoose";
+// Model to hold all the requests and products
 
-export interface Item {
-    product_name: string;
-    product_price: string;
-    product_description: string;
-    _id?: string;
-}
+import { Schema, model, models } from "mongoose";
 
 const itemSchema = new Schema({
     product_name: String,

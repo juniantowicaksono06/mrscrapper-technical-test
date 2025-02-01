@@ -8,9 +8,8 @@ import connectToDb from "@/app/lib/mongoose";
 
 export async function POST(req: NextRequest) {
     await connectToDb();
-    const transactionId = uuidv4();
+    const transactionId = uuidv4(); // Generate transaction id to associate with request
     const message = "OK";
-    // const search = url.searchParams.get("search");
     let search = "";
     try {
         const data = await req.json();
@@ -30,14 +29,14 @@ export async function POST(req: NextRequest) {
 
 
     try {
-        ebayScraping(search, transactionId);
+        ebayScraping(search, transactionId); // Run scraping as asynchronous operation so that it doesn't block the main thread
         const newReq = new Request({
             transactionId: transactionId,
             searchQuery: search,
             status: "processing",
             items: [],
         });
-        await newReq.save();
+        await newReq.save(); // Insert the request into the database
     } catch (error) {
         console.error(error);
         return Response.json({
@@ -57,6 +56,7 @@ export async function POST(req: NextRequest) {
     });
 }
 
+// Function to scrape ebay
 const ebayScraping = async(search: string, transactionId: string) => {
     const baseUrl = process.env.EBAY_BASE_URL as string;
     let browser: Browser | undefined = undefined;
@@ -68,13 +68,14 @@ const ebayScraping = async(search: string, transactionId: string) => {
         const maxPagination = parseInt(process.env.EBAY_MAX_PAGINATION as string);
         const page = await browser.newPage();
         await page.goto(baseUrl);
+        // Using the search bar to search product
         await page.waitForSelector('#gh-ac-wrap');
         await page.click('#gh-ac-wrap > input');
         await page.keyboard.type(search);
         await page.keyboard.press('Enter');
         await page.waitForSelector('#srp-river-results');
-        for(let i = 0; i < maxPagination; i++) {
-            const lis = await page.$$('ul.srp-results > li[data-viewport]');
+        for(let i = 0; i < maxPagination; i++) { // Loop the page to get all items base on maxPagination
+            const lis = await page.$$('ul.srp-results > li[data-viewport]'); // Select all <li> elements that has data-viewport attribute
             for (const li of lis) {
                 let item = await li.evaluate((el) => {
                     const allElements = el.cloneNode(true) as HTMLElement;
@@ -98,12 +99,13 @@ const ebayScraping = async(search: string, transactionId: string) => {
                     }
                 });
     
-                const newPageTarget = await browser?.waitForTarget(target => target.opener() === page.target());
+                const newPageTarget = await browser?.waitForTarget(target => target.opener() === page.target()); // Open detail product to get description
                 const newPage = await newPageTarget?.page();
     
                 if (newPage) {
                     await newPage.bringToFront();
                     await newPage.waitForSelector('#desc_ifr');
+                    // The description is within the iframe so need to access get the URL from the iframe first to access the page and get the description!
                     const iframeUrl = await newPage.evaluate(() => {
                         const iframe = document.getElementById('desc_ifr') as HTMLIFrameElement;
                         return iframe ? iframe.src : null;
@@ -111,7 +113,7 @@ const ebayScraping = async(search: string, transactionId: string) => {
     
                     if (iframeUrl) {
                         await newPage.goto(iframeUrl, {
-                            waitUntil: 'domcontentloaded'
+                            waitUntil: 'domcontentloaded' // Do not wait until the page is fully loaded
                         });
                         let description = "";
                         try {
@@ -146,7 +148,7 @@ const ebayScraping = async(search: string, transactionId: string) => {
                                         items: obj
                                     }
                                 }
-                            )
+                            ); // Only push items when deepseek successfully extracted the text into json
                         }
                         catch(error) {
                             console.error(error);
@@ -155,7 +157,7 @@ const ebayScraping = async(search: string, transactionId: string) => {
                     }
                 }
             }
-            const nextButton = await page.$('div.s-pagination__container a.pagination__next');
+            const nextButton = await page.$('div.s-pagination__container a.pagination__next'); // Next button to access next page
             if(nextButton) {
                 await nextButton.click();
                 await page.waitForSelector('#srp-river-results');
@@ -166,9 +168,9 @@ const ebayScraping = async(search: string, transactionId: string) => {
         }, {
             $set: {
                 status: "success",
-                log: "Scraping Success"
+                log: "Scraping Successfully"
             }
-        })
+        }); // Update status to success once the scraping is done
     }
     catch(error) {
         console.error(error);
@@ -179,11 +181,11 @@ const ebayScraping = async(search: string, transactionId: string) => {
                 status: "failed",
                 log: error
             }
-        })
+        }); // Update status to failed if there is an error
     }
     finally {
         if (browser !== undefined) {
-            await browser.close();
+            await browser.close(); // Close the browser
         }
     }
 }
