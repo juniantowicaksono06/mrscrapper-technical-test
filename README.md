@@ -40,12 +40,12 @@ bun run dev # if you use bun
 ```
 
 ## API Docs
-- [Base Url](#baseurl)
+- [Base Url](#url)
 - [Endpoints](#endpoints)
     - [POST /api/scraping/ebay?search=search-product](#perform-scrapping)
     - [GET /api/retrieve/:transaction_id](#get-products-by-transaction-id)
 
-## Base Url
+## URL
 - **Base Url:** http://localhost:3000
 
 ## Endpoints
