@@ -42,14 +42,14 @@ bun run dev # if you use bun
 ## API Docs
 - [Base Url](#url)
 - [Endpoints](#endpoints)
-    - [POST /api/scraping/ebay?search=search-product](#perform-scrapping)
-    - [GET /api/retrieve/:transaction_id](#get-products-by-transaction-id)
+    - [POST /api/scraping/ebay?search=search-product](#post-scraping-ebay)
+    - [GET /api/retrieve/:transaction_id](#get-retrieve-products)
 
 ## URL
 - **Base Url:** http://localhost:3000
 
 ## Endpoints
-### **POST /api/scraping/ebay**
+### **POST /scraping-ebay**
 - **Description:** Perform scrapping
 - **URL:** `/api/scraping/ebay`
 - **Headers:**
@@ -82,7 +82,7 @@ bun run dev # if you use bun
 ```
 - **HTTP Response Error:** `500`
 
-### **GET /api/retrieve/:transaction_id**
+### **GET /retrieve-products**
 
 - **Description:** Retrieve the products after scraping is finished
 - **URL:** `/api/retrieve/:transaction_id`
